@@ -97,7 +97,7 @@ print(str_c("The interval with the maximum average steps is Interval ",
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs).
 
-```{r }
+```{r na_rows}
 na_rows <- table %>%
         filter(is.na(steps) | is.na(date) | is.na(interval)) %>%
         nrow()
@@ -108,13 +108,13 @@ print(str_c("There are ",
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
-```{r }
+```{r print}
 print("We will replace every NA in the dataset with the mean number of steps for the interval listed in that row rounded to the nearest integer.")
 ```
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r }
+```{r imputed_data}
 imputed_data <- table %>%
         inner_join(mean_steps_per_interval, by = "interval") %>%
         mutate(steps = if_else(is.na(steps),
@@ -128,7 +128,7 @@ as_tibble(imputed_data)
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.  Do these values differ from the estimates from the first part of the assignment?  What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r }
+```{r imputed_steps_per_day}
 imputed_steps_per_day <- imputed_data %>%
         group_by(date) %>%
         summarize(ImputedStepsPerDay = sum(steps)) %>%
@@ -166,7 +166,7 @@ print(str_c("Therefore, the way by which we imputed missing data decreased ",
 
 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
-```{r }
+```{r imputed_week_levels}
 imputed_week_levels <- imputed_data %>%
         mutate(weekday = weekdays(as.Date(date, format = "%Y-%m-%d"))) %>%
         mutate(week_level = if_else(weekday %in% c("Saturday",
@@ -179,7 +179,7 @@ as_tibble(imputed_week_levels)
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
-```{r }
+```{r mean_imputed_steps_per_interval_per_level}
 mean_imputed_steps_per_interval_per_level <- imputed_week_levels %>%
         group_by(interval,
                  week_level) %>%
